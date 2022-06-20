@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 ubuntu:20.04
+FROM --platform=linux/amd64 ubuntu:20.04 as builder
 
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential cmake pkg-config liblua5.3-dev git libxcb1-dev libyajl-dev libasound-dev libglib2.0-dev libnl-3-dev libnl-genl-3-dev libudev-dev libx11-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-util-dev python-docutils
@@ -8,3 +8,12 @@ WORKDIR /repo/build
 RUN cmake ..
 RUN make -j8
 RUN make install
+
+RUN mkdir -p /deps
+RUN ldd /repo/build/luastatus/luastatus | tr -s '[:blank:]' '\n' | grep '^/' | xargs -I % sh -c 'cp % /deps;'
+
+FROM ubuntu:20.04 as package
+
+COPY --from=builder /deps /deps
+COPY --from=builder /repo/build/luastatus/luastatus /repo/build/luastatus/luastatus
+ENV LD_LIBRARY_PATH=/deps
