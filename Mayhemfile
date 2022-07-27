@@ -2,4 +2,4 @@ project: luastatus
 target: luastatus
 
 cmds:
-  - cmd: /repo/build/luastatus/luastatus -b stdout -B out_fd=4 -e @@ 4>&1 1>&2
+  - cmd: /install/bin/luastatus -b stdout -B out_fd=4 -e @@ 4>&1 1>&2

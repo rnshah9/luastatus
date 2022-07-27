@@ -5,15 +5,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential cmake pkg-
 
 COPY . /repo
 WORKDIR /repo/build
-RUN cmake ..
+RUN cmake .. -DCMAKE_INSTALL_PREFIX=/install
 RUN make -j8
 RUN make install
 
-RUN mkdir -p /deps
-RUN ldd /repo/build/luastatus/luastatus | tr -s '[:blank:]' '\n' | grep '^/' | xargs -I % sh -c 'cp % /deps;'
-
 FROM ubuntu:20.04 as package
-
-COPY --from=builder /deps /deps
-COPY --from=builder /repo/build/luastatus/luastatus /repo/build/luastatus/luastatus
-ENV LD_LIBRARY_PATH=/deps
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y liblua5.3-dev
+COPY --from=builder /install /install
