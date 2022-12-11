@@ -1,0 +1,6 @@
+project: luastatus
+target: ls-strfollow
+
+cmds:
+  - cmd: /fuzz_ls_strfollow
+    libfuzzer: true

@@ -51,7 +51,8 @@ jobs:
       fail-fast: false
       matrix:
         mayhemfile:
-          - mayhem/Mayhemfile
+          - mayhem/Mayhemfile_ls_strfollow
+          - mayhem/Mayhemfile_luastatus
 
     steps:
       - uses: actions/checkout@v2
